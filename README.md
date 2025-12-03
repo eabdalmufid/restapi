@@ -10,6 +10,7 @@ A modern REST API built with Next.js 16, TypeScript, and Tailwind CSS. This proj
 ## 📖 Description
 
 This project serves as a comprehensive foundation for building REST APIs using Next.js 16 and TypeScript. It features:
+
 - Next.js 16 with App Router for flexible API development
 - Full TypeScript support for type-safe code
 - Tailwind CSS for utility-first styling
@@ -22,8 +23,8 @@ Perfect for developers looking to build scalable APIs with the latest web techno
 
 ## 🖼️ Project Overview
 
-![Project Screenshot](./public/landing-page.png)
-_Landing Page_
+![Landing Page Dark Mode](./public/images/landing-page-dark.png)
+![Landing Page Light Mode](./public/images/landing-page-light.png)
 
 ## 🚀 Features
 

@@ -1,7 +1,7 @@
 import * as React from 'react';
+import Link from 'next/link';
 import { Slot } from '@radix-ui/react-slot';
 import { cva, type VariantProps } from 'class-variance-authority';
-
 import { cn } from '@/lib/utils';
 
 const buttonVariants = cva(
@@ -34,20 +34,19 @@ const buttonVariants = cva(
     },
 );
 
-function Button({
-    className,
-    variant,
-    size,
-    asChild = false,
-    ...props
-}: React.ComponentProps<'button'> &
+type ButtonProps = React.ComponentProps<'button'> &
     VariantProps<typeof buttonVariants> & {
         asChild?: boolean;
-    }) {
-    const Comp = asChild ? Slot : 'button';
+        href?: string;
+    };
+
+function Button({ className, variant, size, href, asChild = false, ...props }: ButtonProps) {
+    const Comp = href ? Link : asChild ? Slot : 'button';
 
     return (
+        // @ts-expect-error next/link typing clash workaround
         <Comp
+            href={href!}
             data-slot="button"
             className={cn(buttonVariants({ variant, size, className }))}
             {...props}

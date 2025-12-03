@@ -1,11 +1,14 @@
 'use client';
 
-import { Button } from './ui/button';
+import { Button } from '@/components/ui/button';
 import { ArrowRight } from 'lucide-react';
 
 export default function Hero() {
     return (
-        <section className="relative flex min-h-screen items-center justify-center px-6 py-12">
+        <section
+            className="relative flex min-h-screen items-center justify-center px-6 py-12"
+            id="hero"
+        >
             <div className="absolute inset-0 z-0">
                 <div className="bg-primary/5 absolute top-20 left-10 h-64 w-64 rounded-full blur-3xl"></div>
                 <div className="bg-secondary/5 absolute right-10 bottom-20 h-80 w-80 rounded-full blur-3xl"></div>
@@ -28,6 +31,7 @@ export default function Hero() {
                 <div className="flex flex-col items-center justify-center gap-4 sm:flex-row">
                     <Button
                         size="lg"
+                        href="/docs"
                         className="group w-1/4 rounded-full px-8 py-5 text-base transition-all"
                     >
                         <ArrowRight className="mr-2 h-4 w-4 transform transition-transform duration-200 group-hover:translate-x-1" />
@@ -37,6 +41,7 @@ export default function Hero() {
                     <Button
                         variant="outline"
                         size="lg"
+                        href="/docs"
                         className="rounded-full px-8 py-5 text-base"
                     >
                         View Documentation
