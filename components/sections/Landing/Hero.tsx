@@ -32,7 +32,7 @@ export default function Hero() {
                     <Button
                         size="lg"
                         href="/docs"
-                        className="group w-1/4 rounded-full px-8 py-5 text-base transition-all"
+                        className="group w-1/2 rounded-full px-8 py-5 text-base transition-all md:w-1/4"
                     >
                         <ArrowRight className="mr-2 h-4 w-4 transform transition-transform duration-200 group-hover:translate-x-1" />
                         Try it
