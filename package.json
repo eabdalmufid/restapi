@@ -1,6 +1,7 @@
 {
     "name": "restapi",
     "version": "0.1.0-alpha",
+    "description": "Modern REST API starter using Next.js 16, TypeScript, Tailwind CSS, and App Router.",
     "author": {
         "name": "Muhammad Adriansyah",
         "url": "https://seaavey.my.id"
