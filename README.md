@@ -1,36 +1,64 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
-
-## Getting Started
-
-First, run the development server:
-
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
-
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
-
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
-
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
-
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+/
+├── app/
+│ ├── (public)/ # Halaman publik (landing, login, register)
+│ │ └── login/
+│ │ └── page.tsx
+│ ├── (dashboard)/ # Halaman private (setelah login)
+│ │ ├── layout.tsx
+│ │ └── page.tsx
+│ ├── api/ # Route API Next.js
+│ │ └── auth/
+│ │ └── route.ts
+│ ├── layout.tsx # Root layout
+│ ├── page.tsx # Homepage
+│ ├── global-error.tsx # Error fallback
+│ └── loading.tsx # Loading global
+│
+├── components/
+│ ├── ui/ # Komponen shadcn yang di-generate
+│ ├── common/ # Komponen umum (Navbar, Footer)
+│ ├── forms/ # Komponen form
+│ └── layout/ # Komponen layout kecil
+│
+├── lib/
+│ ├── utils.ts # Helper function
+│ ├── auth.ts # Authentication logic
+│ ├── db.ts # Prisma / DB connector
+│ ├── validators/ # Zod schemas
+│ └── services/ # Service layer untuk API calls / business logic
+│
+├── hooks/
+│ └── useUser.ts # Custom hooks
+│
+├── store/
+│ └── user.store.ts # Zustand / Jotai state management
+│
+├── styles/
+│ ├── globals.css
+│ └── variables.css
+│
+├── public/
+│ ├── images/
+│ ├── icons/
+│ └── favicon.ico
+│
+├── config/
+│ ├── site.ts # Config judul / info website
+│ ├── env.ts # Zod environment parser
+│ └── api.ts # Base URL API dsb.
+│
+├── types/
+│ ├── next.d.ts # Type augmentation
+│ └── index.ts # Global TS types
+│
+├── prisma/
+│ └── schema.prisma
+│
+├── scripts/
+│ └── seed.ts # Script seeding database
+│
+├── .env
+├── tailwind.config.ts
+├── next.config.ts
+├── tsconfig.json
+└── package.json
