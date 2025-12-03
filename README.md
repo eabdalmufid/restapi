@@ -1,64 +1,31 @@
-/
-├── app/
-│ ├── (public)/ # Halaman publik (landing, login, register)
-│ │ └── login/
-│ │ └── page.tsx
-│ ├── (dashboard)/ # Halaman private (setelah login)
-│ │ ├── layout.tsx
-│ │ └── page.tsx
-│ ├── api/ # Route API Next.js
-│ │ └── auth/
-│ │ └── route.ts
-│ ├── layout.tsx # Root layout
-│ ├── page.tsx # Homepage
-│ ├── global-error.tsx # Error fallback
-│ └── loading.tsx # Loading global
-│
-├── components/
-│ ├── ui/ # Komponen shadcn yang di-generate
-│ ├── common/ # Komponen umum (Navbar, Footer)
-│ ├── forms/ # Komponen form
-│ └── layout/ # Komponen layout kecil
-│
-├── lib/
-│ ├── utils.ts # Helper function
-│ ├── auth.ts # Authentication logic
-│ ├── db.ts # Prisma / DB connector
-│ ├── validators/ # Zod schemas
-│ └── services/ # Service layer untuk API calls / business logic
-│
-├── hooks/
-│ └── useUser.ts # Custom hooks
-│
-├── store/
-│ └── user.store.ts # Zustand / Jotai state management
-│
-├── styles/
-│ ├── globals.css
-│ └── variables.css
-│
-├── public/
-│ ├── images/
-│ ├── icons/
-│ └── favicon.ico
-│
-├── config/
-│ ├── site.ts # Config judul / info website
-│ ├── env.ts # Zod environment parser
-│ └── api.ts # Base URL API dsb.
-│
-├── types/
-│ ├── next.d.ts # Type augmentation
-│ └── index.ts # Global TS types
-│
-├── prisma/
-│ └── schema.prisma
-│
-├── scripts/
-│ └── seed.ts # Script seeding database
-│
-├── .env
-├── tailwind.config.ts
-├── next.config.ts
-├── tsconfig.json
-└── package.json
+Buatkan kode Next + Tailwind untuk sebuah **Navbar Glassmorphism** yang:
+
+1. **Responsif penuh**
+    - Menu hilang di mobile
+    - Ada hamburger menu untuk mobile
+    - Menu mobile memakai animated drawer/sheet
+
+2. **Glassmorphism modern**
+    - Background transparan (`bg-background/30` atau `bg-white/20`)
+    - `backdrop-blur-md`
+    - Border halus `border border-border/30`
+    - Shadow lembut
+
+3. **Mengikuti warna shadcn/ui**
+    - Gunakan: `bg-background`, `text-foreground`, `border-border`, `text-primary`
+
+4. **Struktur Navbar**
+    - Kiri: Logo
+    - Tengah: Navigation links
+    - Kanan: Hanya satu button: **“Try”**
+
+5. **Kode harus lengkap**
+    - Termasuk state & logic mobile menu
+    - Penuh, rapi, readable, langsung siap pakai
+
+6. **Gunakan animasi smooth**
+    - `transition`, `ease-out`, `duration-300`
+
+7. **Output hanya kode final tanpa penjelasan**
+
+Buat seluruh komponen ini dalam satu file React/Next.js dengan Tailwind, tanpa error dan langsung usable.
