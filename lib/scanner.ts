@@ -1,7 +1,12 @@
-import { readdirSync, Dirent, existsSync } from 'fs';
+import { readdirSync, Dirent, existsSync, readFileSync } from 'fs';
 import { join, relative } from 'path';
 
-type ScanResult = Record<string, string[]>;
+type FeatureInfo = {
+    path: string;
+    queryParams: string[];
+};
+
+type ScanResult = Record<string, FeatureInfo[]>;
 
 export class ApiScanner {
     private rootDir: string;
@@ -10,9 +15,35 @@ export class ApiScanner {
         this.rootDir = rootDir;
     }
 
-    private readRecursive(base: string, current: string = base): string[] {
+    /** 🔹 Ambil query params dari isi file */
+    private extractQueryParams(filePath: string): string[] {
+        const code = readFileSync(filePath, 'utf-8');
+        const params = new Set<string>();
+
+        // const { a, b } = req.query
+        const destructuring = code.match(/const\s*{\s*([^}]+)\s*}\s*=\s*req\.query/g) || [];
+
+        for (const block of destructuring) {
+            const vars = block
+                .replace(/const|{|}|=|req\.query/g, '')
+                .split(',')
+                .map(v => v.trim())
+                .filter(Boolean);
+
+            vars.forEach(v => params.add(v));
+        }
+
+        // req.query.xxx
+        const direct = code.match(/req\.query\.([a-zA-Z0-9_]+)/g) || [];
+        direct.forEach(m => params.add(m.replace('req.query.', '')));
+
+        return Array.from(params);
+    }
+
+    /** 🔹 Recursive reader */
+    private readRecursive(base: string, current: string = base): FeatureInfo[] {
         const entries: Dirent[] = readdirSync(current, { withFileTypes: true });
-        const result: string[] = [];
+        const result: FeatureInfo[] = [];
 
         for (const entry of entries) {
             const fullPath = join(current, entry.name);
@@ -22,11 +53,14 @@ export class ApiScanner {
             }
 
             if (entry.isFile()) {
-                result.push(
-                    relative(base, fullPath)
-                        .replace(/\.(ts|js)$/, '')
-                        .replace(/\/index$/, ''),
-                );
+                const path = relative(base, fullPath)
+                    .replace(/\.(ts|js)$/, '')
+                    .replace(/\/index$/, '');
+
+                result.push({
+                    path,
+                    queryParams: this.extractQueryParams(fullPath),
+                });
             }
         }
 
@@ -41,44 +75,35 @@ export class ApiScanner {
     }
 
     /** 🔹 Ambil semua feature dalam satu category */
-    public getFeatures(category: string): string[] {
+    public getFeatures(category: string): FeatureInfo[] {
         const categoryPath = join(this.rootDir, category);
         if (!existsSync(categoryPath)) return [];
 
         return this.readRecursive(categoryPath);
     }
 
-    public findFeature(feature: string): { category: string; path: string } | null {
+    /** 🔹 Cari feature */
+    public findFeature(feature: string): { category: string; feature: FeatureInfo } | null {
         for (const category of this.getCategories()) {
             const features = this.getFeatures(category);
 
             for (const f of features) {
-                if (f === feature || f.endsWith(`/${feature}`)) {
-                    return {
-                        category,
-                        path: f,
-                    };
+                if (f.path === feature || f.path.endsWith(`/${feature}`)) {
+                    return { category, feature: f };
                 }
             }
         }
-
         return null;
     }
 
-    /** 🔹 Ambil satu feature aja (detail check) */
-    // lib/scanner.ts
+    /** 🔹 Check feature exist */
     public hasFeature(feature: string): boolean {
-        for (const category of this.getCategories()) {
-            const features = this.getFeatures(category);
-
-            if (features.some(f => f === feature || f.endsWith(`/${feature}`))) {
-                return true;
-            }
-        }
-        return false;
+        return this.getCategories().some(cat =>
+            this.getFeatures(cat).some(f => f.path === feature || f.path.endsWith(`/${feature}`)),
+        );
     }
 
-    /** 🔹 Full scan (optional) */
+    /** 🔹 Full scan */
     public scanAll(): ScanResult {
         const data: ScanResult = {};
 

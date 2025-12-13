@@ -2,7 +2,6 @@ import DocsBody from '@/components/sections/Docs/Body';
 import DocsHeader from '@/components/sections/Docs/Header';
 import { Metadata } from 'next';
 import { notFound } from 'next/navigation';
-
 const formatTitle = (value: string) =>
     value.replace(/[-_]/g, ' ').replace(/\b\w/g, char => char.toUpperCase());
 

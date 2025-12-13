@@ -3,6 +3,7 @@ import DocsSidebar from '@/components/sections/Docs/Sidebar';
 import { DocsSidebarProvider } from '@/components/contexts/DocsSidebarContext';
 import PageTransition from '@/components/providers/Transition';
 import type { Metadata } from 'next';
+import { Toaster } from 'react-hot-toast';
 
 export const metadata: Metadata = {
     title: 'Documentation',
@@ -20,6 +21,7 @@ export default function DocsLayout({ children }: { children: React.ReactNode }) 
                         <PageTransition>{children}</PageTransition>
                     </main>
                 </div>
+                <Toaster position="top-right" />
             </div>
         </DocsSidebarProvider>
     );

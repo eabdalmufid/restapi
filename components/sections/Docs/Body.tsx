@@ -1,3 +1,5 @@
+'use client';
+
 import {
     Card,
     CardContent,
@@ -6,6 +8,7 @@ import {
     CardHeader,
     CardTitle,
 } from '@/components/ui/card';
+import toast from 'react-hot-toast';
 
 export default function DocsBody() {
     return (
@@ -18,6 +21,7 @@ export default function DocsBody() {
                 <CardContent>Card Content</CardContent>
                 <CardFooter>Card Footer</CardFooter>
             </Card>
+            <div onClick={() => toast.success('test')}>Anjay</div>
         </div>
     );
 }
