@@ -61,7 +61,7 @@ Perfect for developers looking to build scalable APIs with the latest web techno
 
 ## 🛠️ Tech Stack
 
-- **Framework**: [Next.js](https://nextjs.org/) 16.0.6
+- **Framework**: [Next.js](https://nextjs.org/) 16.0.7
 - **Language**: [TypeScript](https://www.typescriptlang.org/) 5+
 - **Styling**: [Tailwind CSS](https://tailwindcss.com/) 4+
 - **Icons**: [Lucide React](https://lucide.dev/)
