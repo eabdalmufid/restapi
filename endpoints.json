@@ -15,13 +15,14 @@
                         {
                             "name": "query",
                             "type": "string",
-                            "required": true
+                            "required": true,
+                            "default": "about you"
                         },
                         {
                             "name": "limit",
                             "type": "number",
                             "required": false,
-                            "default": 10
+                            "default": 2
                         }
                     ],
                     "responses": {

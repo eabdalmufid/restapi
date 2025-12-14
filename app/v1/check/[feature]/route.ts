@@ -1,7 +1,7 @@
 import { ApiSchema } from '@/types/APISchema';
 import { readFileSync } from 'fs';
-import { NextResponse } from 'next/server';
 import { join } from 'path';
+import { NextResponse } from 'next/server';
 
 export async function GET(_req: Request, props: { params: Promise<{ feature: string }> }) {
     const { feature } = await props.params;
@@ -10,25 +10,38 @@ export async function GET(_req: Request, props: { params: Promise<{ feature: str
 
     let schema: ApiSchema;
 
+    // Load schema
     try {
         schema = JSON.parse(readFileSync(filePath, 'utf-8')) as ApiSchema;
     } catch {
         return NextResponse.json(
-            { ok: false, message: 'Failed to load endpoints schema' },
+            {
+                ok: false,
+                message: 'Failed to load endpoints schema',
+            },
             { status: 500 },
         );
     }
 
-    const service = schema.services.find(s => s.features.some(f => f.key === feature));
+    // Find feature by key (flatten all services)
+    const featureData = schema.services
+        .flatMap(service => service.features)
+        .find(f => f.key === feature);
 
-    if (!service) {
-        return NextResponse.json({ ok: false, message: 'Service not found' }, { status: 404 });
+    if (!featureData) {
+        return NextResponse.json(
+            {
+                ok: false,
+                message: 'Feature not found',
+            },
+            { status: 404 },
+        );
     }
 
     return NextResponse.json(
         {
             ok: true,
-            data: service,
+            data: featureData,
         },
         {
             status: 200,

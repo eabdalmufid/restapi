@@ -1,370 +1,149 @@
 'use client';
 
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { DocSection } from './DocSection';
-import { useEffect, useState } from 'react';
+import {
+    Table,
+    TableBody,
+    TableCell,
+    TableHead,
+    TableHeader,
+    TableRow,
+} from '@/components/ui/table';
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
+import { Separator } from '@/components/ui/separator';
+import { Feature } from '@/types/APISchema';
+import { ChevronDown } from 'lucide-react';
+import toast from 'react-hot-toast';
+import ApiTestDialog from './Dialog';
 
-interface DocSectionType {
-    title: string;
-    description: string;
-    endpoint: string;
-    method: string;
-    parameters?: Array<{
-        name: string;
-        type: string;
-        required: boolean;
-        description: string;
-    }>;
-    exampleRequest?: string;
-    exampleResponse?: string;
-}
-
-interface DocData {
-    title: string;
-    description: string;
-    sections: DocSectionType[];
-}
-
-export default function DocsBody({ category, feature }: { category?: string; feature?: string }) {
-    const [docData, setDocData] = useState<DocData | null>(null);
-    const [loading, setLoading] = useState(true);
-    const [error, setError] = useState<string | null>(null);
-
-    useEffect(() => {
-        const fetchDocumentation = async () => {
-            try {
-                setLoading(true);
-
-                // In a real implementation, you would fetch from an API or static content
-                // For now, I'll create mock documentation based on category and feature
-                const mockData: DocData = generateMockDocumentation(category || '', feature || '');
-                setDocData(mockData);
-                setError(null);
-            } catch (err) {
-                setError('Failed to load documentation');
-                console.error('Error loading docs:', err);
-            } finally {
-                setLoading(false);
-            }
-        };
-
-        if (category && feature) {
-            fetchDocumentation();
-        } else {
-            // Load introduction page
-            setDocData({
-                title: 'Introduction',
-                description:
-                    'Welcome to the Seaavey APIs documentation. Here you will find comprehensive guides and references to help you get started with our services.',
-                sections: [
-                    {
-                        title: 'Getting Started',
-                        description: 'Learn the basics of how to use our API services.',
-                        endpoint: '/api/v1',
-                        method: 'GET',
-                        parameters: [],
-                        exampleRequest: '{}',
-                        exampleResponse:
-                            '{\n  "status": "success",\n  "data": {\n    "message": "Welcome to Seaavey APIs"\n  }\n}',
-                    },
-                    {
-                        title: 'Authentication',
-                        description:
-                            'All API requests require an API key to be included in the header.',
-                        endpoint: '/api/v1',
-                        method: 'GET',
-                        parameters: [
-                            {
-                                name: 'Authorization',
-                                type: 'string',
-                                required: true,
-                                description: 'Bearer token for authentication',
-                            },
-                        ],
-                        exampleRequest: '{ headers: { "Authorization": "Bearer YOUR_API_KEY" }}',
-                        exampleResponse: '{\n  "status": "success",\n  "data": {}\n}',
-                    },
-                    {
-                        title: 'Rate Limits',
-                        description: 'Our API has rate limits to ensure fair usage.',
-                        endpoint: '/api/v1',
-                        method: 'GET',
-                        parameters: [],
-                        exampleRequest: '{}',
-                        exampleResponse:
-                            '{\n  "status": "success",\n  "data": {\n    "rate_limit": 1000,\n    "remaining_calls": 999\n  }\n}',
-                    },
-                ],
-            });
-            setLoading(false);
-        }
-    }, [category, feature]);
-
-    // Render loading state
-    if (loading) {
-        return (
-            <div className="flex flex-1 flex-col p-6">
-                <div className="animate-pulse space-y-6">
-                    <div className="bg-muted h-8 w-1/3 rounded"></div>
-                    <div className="bg-muted h-4 w-2/3 rounded"></div>
-                    <div className="bg-muted h-4 w-1/2 rounded"></div>
-
-                    {[1, 2, 3].map(item => (
-                        <div key={item} className="space-y-4">
-                            <div className="bg-muted h-6 w-1/4 rounded"></div>
-                            <div className="bg-muted h-4 w-full rounded"></div>
-                            <div className="bg-muted h-4 w-5/6 rounded"></div>
-                        </div>
-                    ))}
-                </div>
-            </div>
-        );
+const methodColor = (method: string) => {
+    switch (method) {
+        case 'GET':
+            return 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400';
+        case 'POST':
+            return 'bg-sky-500/10 text-sky-600 dark:text-sky-400';
+        case 'PUT':
+            return 'bg-amber-500/10 text-amber-600 dark:text-amber-400';
+        case 'PATCH':
+            return 'bg-purple-500/10 text-purple-600 dark:text-purple-400';
+        case 'DELETE':
+            return 'bg-rose-500/10 text-rose-600 dark:text-rose-400';
+        default:
+            return 'bg-muted text-muted-foreground';
     }
+};
 
-    // Render error state
-    if (error) {
-        return (
-            <div className="flex flex-1 flex-col p-6">
-                <Card className="mx-auto max-w-4xl">
-                    <CardHeader>
-                        <CardTitle>Error Loading Documentation</CardTitle>
-                        <CardDescription>{error}</CardDescription>
-                    </CardHeader>
-                    <CardContent>
-                        <p>Please try again later or contact support if the issue persists.</p>
-                    </CardContent>
-                </Card>
-            </div>
-        );
-    }
-
+export default function DocsBody({ data, category }: { data: Feature; category: string }) {
+    const fullPath = `${process.env.NEXT_PUBLIC_API_URL}/api/${category}${data.path}`;
     return (
-        <div className="flex flex-1 flex-col">
-            <div className="prose prose-slate dark:prose-invert mx-auto w-full max-w-4xl p-6">
-                {docData && (
-                    <>
-                        <h1 className="mb-4 text-3xl font-bold">{docData.title}</h1>
-                        <p className="text-muted-foreground mb-8 text-lg">{docData.description}</p>
-
-                        {docData.sections.map((section, index) => (
-                            <DocSection
-                                key={index}
-                                section={section}
-                                index={index}
-                                totalSections={docData.sections.length}
-                            />
-                        ))}
-                    </>
-                )}
+        <div className="mx-auto w-full max-w-4xl space-y-10 p-6">
+            <div className="space-y-2">
+                <h1 className="text-3xl font-bold">{data.key}</h1>
+                {data.summary && <p className="text-muted-foreground text-lg">{data.summary}</p>}
             </div>
+
+            <Card>
+                <CardHeader>
+                    <CardTitle className="flex flex-wrap items-center gap-2">
+                        {data.method.map(method => (
+                            <Badge key={method} className={methodColor(method)}>
+                                {method}
+                            </Badge>
+                        ))}
+                        <span className="text-muted-foreground font-mono text-sm">{fullPath}</span>
+                        <Button
+                            variant="ghost"
+                            size="sm"
+                            className="ml-auto"
+                            onClick={() => {
+                                navigator.clipboard.writeText(fullPath);
+                                toast.success('Copied to clipboard');
+                            }}
+                        >
+                            Copy
+                        </Button>
+                        <ApiTestDialog feature={data} category={category} />
+                    </CardTitle>
+                    <CardDescription>Endpoint</CardDescription>
+                </CardHeader>
+            </Card>
+
+            <Card>
+                <CardHeader>
+                    <CardTitle>Query Parameters</CardTitle>
+                    <CardDescription>Parameters passed via query string</CardDescription>
+                </CardHeader>
+                <CardContent>
+                    {data.queryParameters?.length ? (
+                        <Table>
+                            <TableHeader>
+                                <TableRow>
+                                    <TableHead>Name</TableHead>
+                                    <TableHead>Type</TableHead>
+                                    <TableHead>Required</TableHead>
+                                    <TableHead>Default</TableHead>
+                                </TableRow>
+                            </TableHeader>
+                            <TableBody>
+                                {data.queryParameters.map(param => (
+                                    <TableRow key={param.name}>
+                                        <TableCell className="font-mono">{param.name}</TableCell>
+                                        <TableCell>
+                                            <Badge variant="outline">{param.type}</Badge>
+                                        </TableCell>
+                                        <TableCell>
+                                            {param.required ? (
+                                                <Badge variant="destructive">Yes</Badge>
+                                            ) : (
+                                                'No'
+                                            )}
+                                        </TableCell>
+                                        <TableCell className="font-mono">
+                                            {param.default !== undefined
+                                                ? String(param.default)
+                                                : '-'}
+                                        </TableCell>
+                                    </TableRow>
+                                ))}
+                            </TableBody>
+                        </Table>
+                    ) : (
+                        <p className="text-muted-foreground text-sm">No query parameters</p>
+                    )}
+                </CardContent>
+            </Card>
+
+            <Card>
+                <CardHeader>
+                    <CardTitle>Responses</CardTitle>
+                    <CardDescription>Response schema by status code</CardDescription>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                    {Object.entries(data.responses).map(([status, schema]) => (
+                        <Collapsible key={status}>
+                            <CollapsibleTrigger asChild>
+                                <Button variant="ghost" className="flex w-full justify-between">
+                                    <div className="flex items-center gap-2">
+                                        <Badge variant="secondary">{status}</Badge>
+                                        <span className="text-muted-foreground text-sm">
+                                            Response Body
+                                        </span>
+                                    </div>
+                                    <ChevronDown className="h-4 w-4" />
+                                </Button>
+                            </CollapsibleTrigger>
+                            <CollapsibleContent>
+                                <Separator className="my-3" />
+                                <pre className="bg-muted overflow-x-auto rounded-md p-4 text-sm">
+                                    {JSON.stringify(schema, null, 2)}
+                                </pre>
+                            </CollapsibleContent>
+                        </Collapsible>
+                    ))}
+                </CardContent>
+            </Card>
         </div>
     );
-}
-
-// Helper function to generate mock documentation based on category and feature
-function generateMockDocumentation(category: string, feature: string): DocData {
-    // Mock data based on the navigation structure
-    if (category.toLowerCase() === 'search' && feature.toLowerCase() === 'lyrics') {
-        return {
-            title: 'Search Lyrics',
-            description: 'Search for song lyrics using our comprehensive database.',
-            sections: [
-                {
-                    title: 'Endpoint',
-                    description: 'Search for lyrics by song title, artist, or both.',
-                    endpoint: '/api/v1/search/lyrics',
-                    method: 'GET',
-                    parameters: [
-                        {
-                            name: 'title',
-                            type: 'string',
-                            required: false,
-                            description: 'Song title to search for',
-                        },
-                        {
-                            name: 'artist',
-                            type: 'string',
-                            required: false,
-                            description: 'Artist name to search for',
-                        },
-                        {
-                            name: 'limit',
-                            type: 'number',
-                            required: false,
-                            description: 'Number of results to return (default: 10, max: 50)',
-                        },
-                    ],
-                    exampleRequest: `GET /api/v1/search/lyrics?title=Bohemian Rhapsody&artist=Queen`,
-                    exampleResponse: `{
-  "status": "success",
-  "data": [
-    {
-      "id": "song_id",
-      "title": "Bohemian Rhapsody",
-      "artist": "Queen",
-      "album": "A Night at the Opera",
-      "year": 1975,
-      "preview": "Is this the real life? Is this just fantasy?..."
-    }
-  ]
-}`,
-                },
-            ],
-        };
-    } else if (category.toLowerCase() === 'search' && feature.toLowerCase() === 'chords') {
-        return {
-            title: 'Search Chords',
-            description: 'Search for guitar chords for songs.',
-            sections: [
-                {
-                    title: 'Endpoint',
-                    description: 'Search for chords by song title, artist, or both.',
-                    endpoint: '/api/v1/search/chords',
-                    method: 'GET',
-                    parameters: [
-                        {
-                            name: 'title',
-                            type: 'string',
-                            required: false,
-                            description: 'Song title to search for',
-                        },
-                        {
-                            name: 'artist',
-                            type: 'string',
-                            required: false,
-                            description: 'Artist name to search for',
-                        },
-                        {
-                            name: 'limit',
-                            type: 'number',
-                            required: false,
-                            description: 'Number of results to return (default: 10, max: 50)',
-                        },
-                    ],
-                    exampleRequest: `GET /api/v1/search/chords?title=Wonderwall&artist=Oasis`,
-                    exampleResponse: `{
-  "status": "success",
-  "data": [
-    {
-      "id": "chord_id",
-      "title": "Wonderwall",
-      "artist": "Oasis",
-      "key": "Em",
-      "difficulty": "Intermediate",
-      "chords": ["Em", "G", "C", "D", "Am"]
-    }
-  ]
-}`,
-                },
-            ],
-        };
-    } else if (category.toLowerCase() === 'song' && feature.toLowerCase() === 'lyrics') {
-        return {
-            title: 'Get Song Lyrics',
-            description: 'Retrieve full lyrics for a specific song.',
-            sections: [
-                {
-                    title: 'Endpoint',
-                    description: 'Get full lyrics for a song by ID.',
-                    endpoint: '/api/v1/song/lyrics',
-                    method: 'GET',
-                    parameters: [
-                        {
-                            name: 'id',
-                            type: 'string',
-                            required: true,
-                            description: 'Unique identifier of the song',
-                        },
-                    ],
-                    exampleRequest: `GET /api/v1/song/lyrics?id=song_id`,
-                    exampleResponse: `{
-  "status": "success",
-  "data": {
-    "id": "song_id",
-    "title": "Bohemian Rhapsody",
-    "artist": "Queen",
-    "album": "A Night at the Opera",
-    "year": 1975,
-    "lyrics": "Is this the real life? Is this just fantasy?...
-Caught in a landslide, no escape from reality..."
-  }
-}`,
-                },
-            ],
-        };
-    } else if (category.toLowerCase() === 'song' && feature.toLowerCase() === 'chords') {
-        return {
-            title: 'Get Song Chords',
-            description: 'Retrieve guitar chords for a specific song.',
-            sections: [
-                {
-                    title: 'Endpoint',
-                    description: 'Get chord progression and details for a song by ID.',
-                    endpoint: '/api/v1/song/chords',
-                    method: 'GET',
-                    parameters: [
-                        {
-                            name: 'id',
-                            type: 'string',
-                            required: true,
-                            description: 'Unique identifier of the song',
-                        },
-                    ],
-                    exampleRequest: `GET /api/v1/song/chords?id=chord_id`,
-                    exampleResponse: `{
-  "status": "success",
-  "data": {
-    "id": "chord_id",
-    "title": "Wonderwall",
-    "artist": "Oasis",
-    "key": "Em",
-    "difficulty": "Intermediate",
-    "chords": ["Em", "G", "C", "D", "Am"],
-    "progression": [
-      {
-        "time": "0:00",
-        "chord": "Em",
-        "lyric": "Today is gonna be the day"
-      },
-      {
-        "time": "0:04",
-        "chord": "G",
-        "lyric": "That they're gonna throw it back to you"
-      }
-    ]
-  }
-}`,
-                },
-            ],
-        };
-    }
-
-    // Default fallback
-    return {
-        title: `${feature} Documentation`,
-        description: `Comprehensive guide for the ${feature} feature in the ${category} category.`,
-        sections: [
-            {
-                title: 'Overview',
-                description: `This section provides information about the ${feature} feature under the ${category} category.`,
-                endpoint: `/api/v1/${category}/${feature}`,
-                method: 'GET',
-                parameters: [
-                    {
-                        name: 'api_key',
-                        type: 'string',
-                        required: true,
-                        description: 'Your API key for authentication',
-                    },
-                ],
-                exampleRequest: `GET /api/v1/${category}/${feature}`,
-                exampleResponse: `{
-  "status": "success",
-  "data": {
-    "message": "This is sample documentation for ${category} - ${feature}"
-  }
-}`,
-            },
-        ],
-    };
 }
