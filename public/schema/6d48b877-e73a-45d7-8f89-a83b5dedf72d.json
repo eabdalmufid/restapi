@@ -1,49 +1,54 @@
 {
     "$schema": "https://json-schema.org/draft/2020-12/schema",
     "$id": "https://api.seavvey.web.id/schema/6d48b877-e73a-45d7-8f89-a83b5dedf72d.json",
-    "title": "API Service Schema",
-    "type": "array",
-    "items": {
-        "type": "object",
-        "required": ["key", "path", "description", "features"],
-        "properties": {
-            "key": {
-                "type": "string",
-                "description": "Service key (e.g. search)"
-            },
-            "path": {
-                "type": "string",
-                "pattern": "^/",
-                "description": "Base API path"
-            },
-            "description": {
-                "type": "string"
-            },
-            "features": {
-                "type": "array",
-                "items": {
-                    "$ref": "#/$defs/feature"
-                }
+    "type": "object",
+    "required": ["services"],
+    "properties": {
+        "services": {
+            "type": "array",
+            "items": {
+                "$ref": "#/$defs/service"
             }
         }
     },
     "$defs": {
-        "feature": {
+        "service": {
             "type": "object",
-            "required": ["key", "path", "method", "summary"],
+            "required": ["key", "path", "features"],
             "properties": {
                 "key": {
                     "type": "string"
                 },
                 "path": {
-                    "type": "string",
-                    "pattern": "^/"
+                    "type": "string"
+                },
+                "description": {
+                    "type": "string"
+                },
+                "features": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/$defs/feature"
+                    }
+                }
+            }
+        },
+
+        "feature": {
+            "type": "object",
+            "required": ["key", "path", "method", "responses"],
+            "properties": {
+                "key": {
+                    "type": "string"
+                },
+                "path": {
+                    "type": "string"
                 },
                 "method": {
                     "type": "array",
                     "items": {
                         "type": "string",
-                        "enum": ["GET", "POST"]
+                        "enum": ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS", "HEAD"]
                     }
                 },
                 "summary": {
@@ -63,9 +68,10 @@
                 }
             }
         },
+
         "queryParameter": {
             "type": "object",
-            "required": ["name", "type", "required"],
+            "required": ["name", "type"],
             "properties": {
                 "name": {
                     "type": "string"
@@ -75,11 +81,13 @@
                     "enum": ["string", "number", "boolean"]
                 },
                 "required": {
-                    "type": "boolean"
+                    "type": "boolean",
+                    "default": false
                 },
                 "default": {}
             }
         },
+
         "response": {
             "type": "object",
             "required": ["type"],
@@ -90,14 +98,56 @@
                 },
                 "items": {
                     "type": "object",
-                    "additionalProperties": {
-                        "oneOf": [
-                            { "type": "string" },
-                            {
-                                "type": "object",
-                                "additionalProperties": { "type": "string" }
+                    "properties": {
+                        "type": {
+                            "type": "string",
+                            "enum": ["object"]
+                        },
+                        "properties": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "$ref": "#/$defs/property"
                             }
-                        ]
+                        },
+                        "required": {
+                            "type": "array",
+                            "items": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "required": ["type", "properties"]
+                },
+                "properties": {
+                    "type": "object",
+                    "additionalProperties": {
+                        "$ref": "#/$defs/property"
+                    }
+                }
+            }
+        },
+
+        "property": {
+            "type": "object",
+            "required": ["type"],
+            "properties": {
+                "type": {
+                    "type": "string",
+                    "enum": ["string", "number", "boolean", "object", "array"]
+                },
+                "properties": {
+                    "type": "object",
+                    "additionalProperties": {
+                        "$ref": "#/$defs/property"
+                    }
+                },
+                "items": {
+                    "$ref": "#/$defs/property"
+                },
+                "required": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
                     }
                 }
             }
