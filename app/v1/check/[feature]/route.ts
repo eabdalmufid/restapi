@@ -1,58 +1,40 @@
+import { ApiSchema } from '@/types/APISchema';
+import { readFileSync } from 'fs';
 import { NextResponse } from 'next/server';
+import { join } from 'path';
 
-type ApiParameter = {
-    name: string;
-    type: string;
-    required: boolean;
-    description?: string;
-};
+export async function GET(_req: Request, props: { params: Promise<{ feature: string }> }) {
+    const { feature } = await props.params;
 
-type ApiResponse<T> = {
-    ok: boolean;
-    feature: string;
-    data: T;
-    meta: {
-        method: string;
-        timestamp: string;
-    };
-};
+    const filePath = join(process.cwd(), 'endpoints.json');
 
-export async function GET(req: Request, props: { params: Promise<{ feature: string }> }) {
-    const params = await props.params;
-    const { feature } = params;
+    let schema: ApiSchema;
 
-    const response: ApiResponse<{
-        parameters: ApiParameter[];
-        description: string;
-        example: Record<string, unknown>;
-    }> = {
-        ok: true,
-        feature,
-        data: {
-            parameters: [
-                {
-                    name: 'url',
-                    type: 'string',
-                    required: true,
-                    description: 'Target URL to be checked',
-                },
-            ],
-            description: `Check whether a URL is valid and accessible using the "${feature}" feature.`,
-            example: {
-                url: 'https://api.seaavey.web.id',
+    try {
+        schema = JSON.parse(readFileSync(filePath, 'utf-8')) as ApiSchema;
+    } catch {
+        return NextResponse.json(
+            { ok: false, message: 'Failed to load endpoints schema' },
+            { status: 500 },
+        );
+    }
+
+    const service = schema.services.find(s => s.features.some(f => f.key === feature));
+
+    if (!service) {
+        return NextResponse.json({ ok: false, message: 'Service not found' }, { status: 404 });
+    }
+
+    return NextResponse.json(
+        {
+            ok: true,
+            data: service,
+        },
+        {
+            status: 200,
+            headers: {
+                'Powered-By': 'Seaavey APIs',
             },
         },
-        meta: {
-            method: 'GET',
-            timestamp: new Date().toISOString(),
-        },
-    };
-
-    return NextResponse.json(response, {
-        status: 200,
-        headers: {
-            'Powered-By': 'Seaavey APIs',
-            'Content-Type': 'application/json',
-        },
-    });
+    );
 }

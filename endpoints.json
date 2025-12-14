@@ -1,0 +1,64 @@
+{
+    "$schema": "https://api.seavvey.web.id/schema/6d48b877-e73a-45d7-8f89-a83b5dedf72d.json",
+    "services": [
+        {
+            "key": "search",
+            "path": "/api/search",
+            "description": "Search-related endpoints.",
+            "features": [
+                {
+                    "key": "lyrics",
+                    "path": "/lyrics",
+                    "method": ["GET"],
+                    "summary": "Search song lyrics",
+                    "queryParameters": [
+                        {
+                            "name": "query",
+                            "type": "string",
+                            "required": true
+                        },
+                        {
+                            "name": "limit",
+                            "type": "number",
+                            "required": false,
+                            "default": 10
+                        }
+                    ],
+                    "responses": {
+                        "200": {
+                            "type": "array",
+                            "items": {
+                                "type": "object",
+                                "properties": {
+                                    "id": { "type": "number" },
+                                    "trackName": { "type": "string" },
+                                    "artistName": { "type": "string" },
+                                    "albumName": { "type": "string" },
+                                    "duration": { "type": "number" },
+                                    "instrumental": { "type": "boolean" },
+                                    "lyrics": {
+                                        "type": "object",
+                                        "properties": {
+                                            "plain": { "type": "string" },
+                                            "synced": { "type": "string" }
+                                        },
+                                        "required": ["plain", "synced"]
+                                    }
+                                },
+                                "required": [
+                                    "id",
+                                    "trackName",
+                                    "artistName",
+                                    "albumName",
+                                    "duration",
+                                    "instrumental",
+                                    "lyrics"
+                                ]
+                            }
+                        }
+                    }
+                }
+            ]
+        }
+    ]
+}
