@@ -10,9 +10,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         const { query, limit } = req.query;
 
         if (!query || typeof query !== 'string')
-            return res
-                .status(400)
-                .json(JSONError({ message: 'Query parameter is required', code: 400 }));
+            return res.status(400).json(JSONErrorData('Query parameter is required'));
 
         const data = await lyrics(query);
 
