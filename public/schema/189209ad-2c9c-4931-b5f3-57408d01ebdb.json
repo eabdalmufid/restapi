@@ -1,0 +1,103 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "$id": "https://api.seavvey.web.id/schema/189209ad-2c9c-4931-b5f3-57408d01ebdb.json",
+    "title": "API Service Schema v2",
+    "type": "object",
+    "properties": {
+        "services": {
+            "type": "array",
+            "items": {
+                "type": "object",
+                "required": ["key", "path", "features"],
+                "properties": {
+                    "key": {
+                        "type": "string"
+                    },
+                    "path": {
+                        "type": "string"
+                    },
+                    "description": {
+                        "type": "string"
+                    },
+                    "features": {
+                        "type": "array",
+                        "items": {
+                            "type": "object",
+                            "required": ["key", "path", "method", "responses"],
+                            "properties": {
+                                "key": {
+                                    "type": "string"
+                                },
+                                "path": {
+                                    "type": "string"
+                                },
+                                "method": {
+                                    "type": "array",
+                                    "items": {
+                                        "type": "string",
+                                        "enum": ["GET", "POST", "PUT", "PATCH", "DELETE"]
+                                    }
+                                },
+                                "summary": {
+                                    "type": "string"
+                                },
+                                "queryParameters": {
+                                    "type": "array",
+                                    "items": {
+                                        "type": "object",
+                                        "required": ["name", "type"],
+                                        "properties": {
+                                            "name": {
+                                                "type": "string"
+                                            },
+                                            "type": {
+                                                "type": "string"
+                                            },
+                                            "required": {
+                                                "type": "boolean",
+                                                "default": false
+                                            },
+                                            "default": {}
+                                        }
+                                    }
+                                },
+                                "responses": {
+                                    "type": "object",
+                                    "description": "HTTP responses grouped by status code",
+                                    "additionalProperties": {
+                                        "type": "object",
+                                        "required": ["success"],
+                                        "properties": {
+                                            "success": {
+                                                "type": "boolean"
+                                            },
+                                            "message": {
+                                                "type": ["string", "null"]
+                                            },
+                                            "data": {
+                                                "description": "Response payload (flexible)",
+                                                "anyOf": [
+                                                    { "type": "object" },
+                                                    { "type": "array" },
+                                                    { "type": "string" },
+                                                    { "type": "number" },
+                                                    { "type": "boolean" },
+                                                    { "type": "null" }
+                                                ]
+                                            },
+                                            "meta": {
+                                                "type": "object",
+                                                "additionalProperties": true
+                                            }
+                                        },
+                                        "additionalProperties": true
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
