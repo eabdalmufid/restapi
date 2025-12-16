@@ -1,5 +1,5 @@
 {
-    "$schema": "https://api.seavvey.web.id/schema/6d48b877-e73a-45d7-8f89-a83b5dedf72d.json",
+    "$schema": "https://api.seavvey.web.id/schema/189209ad-2c9c-4931-b5f3-57408d01ebdb.json",
     "services": [
         {
             "key": "search",
@@ -15,8 +15,7 @@
                         {
                             "name": "query",
                             "type": "string",
-                            "required": true,
-                            "default": "about you"
+                            "required": true
                         },
                         {
                             "name": "limit",
@@ -27,35 +26,29 @@
                     ],
                     "responses": {
                         "200": {
-                            "type": "array",
-                            "items": {
-                                "type": "object",
-                                "properties": {
-                                    "id": { "type": "number" },
-                                    "trackName": { "type": "string" },
-                                    "artistName": { "type": "string" },
-                                    "albumName": { "type": "string" },
-                                    "duration": { "type": "number" },
-                                    "instrumental": { "type": "boolean" },
-                                    "lyrics": {
-                                        "type": "object",
-                                        "properties": {
-                                            "plain": { "type": "string" },
-                                            "synced": { "type": "string" }
-                                        },
-                                        "required": ["plain", "synced"]
-                                    }
-                                },
-                                "required": [
-                                    "id",
-                                    "trackName",
-                                    "artistName",
-                                    "albumName",
-                                    "duration",
-                                    "instrumental",
-                                    "lyrics"
-                                ]
-                            }
+                            "success": true,
+                            "message": null,
+                            "data": [
+                                {
+                                    "id": 5440700,
+                                    "name": "penjaga hati",
+                                    "trackName": "penjaga hati",
+                                    "artistName": "Nadhif Basalamah",
+                                    "albumName": "penjaga hati - Single",
+                                    "duration": 260,
+                                    "instrumental": false,
+                                    "plainLyrics": "Tak sadar kutemukan\nTemukan wanita rupawan yang sadarkan\nDia seorang, tiada lain tiada bukan\nHanya dia\n\nDia buatku nyaman\nDalam hangat pelukan\nDia perasa yang mengerti yang kurasa\nHanya dia\n\n'Kan kuarungi tujuh laut samudra\n'Kan kudaki Pegunungan Himalaya\nApa pun 'kan kulakukan 'tuk dirimu, Sayang\nOh, penjaga hati\n\nKau dan aku sempurna\nSemoga ada cara 'tuk terus bersama\nSelalu kutunggu, tak mau berlalu\nKau dan aku\n\n'Kan kuarungi tujuh laut samudra\n'Kan kudaki Pegunungan Himalaya\nApa pun 'kan kulakukan 'tuk dirimu, Sayang\nOh, penjaga hatiku, ho-uh-oh\n\n'Kan kuarungi tujuh laut samudra\n'Kan kudaki Pegunungan Himalaya\nApa pun 'kan kulakukan 'tuk dirimu, Sayang\nOh, penjaga hatiku, ho-uh-oh\n\nKar'na bersamamu semua terasa indah (terasa indah)\nGundah gulana hatiku t'lah hancur sirna (gulana hatiku t'lah sirna)\nJanjiku takkan kulepas, wahai kau bidadariku dari surga\n'Tuk s'lamanya\n\n'Tuk s'lamanya\n'Tuk s'lamanya",
+                                    "syncedLyrics": "[00:13.49] Tak sadar kutemukan\n[00:17.94] Temukan wanita rupawan yang sadarkan\n[00:23.90] Dia seorang, tiada lain tiada bukan\n[00:28.86] Hanya dia\n[00:34.56] \n[00:38.17] Dia buatku nyaman\n[00:44.22] Dalam hangat pelukan\n[00:48.29] Dia perasa yang mengerti yang kurasa\n[00:53.58] Hanya dia\n[01:00.80] 'Kan kuarungi tujuh laut samudra\n[01:06.81] 'Kan kudaki Pegunungan Himalaya\n[01:12.90] Apa pun 'kan kulakukan 'tuk dirimu, Sayang\n[01:18.02] Oh, penjaga hati\n[01:23.19] \n[01:33.69] Kau dan aku sempurna\n[01:37.86] Semoga ada cara 'tuk terus bersama\n[01:42.72] Selalu kutunggu, tak mau berlalu\n[01:48.83] Kau dan aku\n[01:55.96] 'Kan kuarungi tujuh laut samudra\n[02:02.11] 'Kan kudaki Pegunungan Himalaya\n[02:08.32] Apa pun 'kan kulakukan 'tuk dirimu, Sayang\n[02:13.55] Oh, penjaga hatiku, ho-uh-oh\n[02:26.82] \n[02:45.30] 'Kan kuarungi tujuh laut samudra\n[02:51.24] 'Kan kudaki Pegunungan Himalaya\n[02:57.72] Apa pun 'kan kulakukan 'tuk dirimu, Sayang\n[03:02.78] Oh, penjaga hatiku, ho-uh-oh\n[03:09.91] Kar'na bersamamu semua terasa indah (terasa indah)\n[03:15.94] Gundah gulana hatiku t'lah hancur sirna (gulana hatiku t'lah sirna)\n[03:22.13] Janjiku takkan kulepas, wahai kau bidadariku dari surga\n[03:30.33] 'Tuk s'lamanya\n[03:36.41] 'Tuk s'lamanya\n[03:42.85] 'Tuk s'lamanya\n[03:47.49] "
+                                }
+                            ]
+                        },
+                        "404": {
+                            "success": false,
+                            "message": "No lyrics found"
+                        },
+                        "400": {
+                            "success": false,
+                            "message": "Query parameter is required"
                         }
                     }
                 }
