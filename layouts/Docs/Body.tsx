@@ -1,5 +1,9 @@
 'use client';
 
+import { AnimatePresence, motion } from 'framer-motion';
+import { useState } from 'react';
+import { ChevronDown } from 'lucide-react';
+import toast from 'react-hot-toast';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -11,12 +15,10 @@ import {
     TableHeader,
     TableRow,
 } from '@/components/ui/table';
-import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
+import { Collapsible, CollapsibleTrigger } from '@/components/ui/collapsible';
 import { Separator } from '@/components/ui/separator';
-import ApiTestDialog from '@/components/common/dialog/ApiTestDialog';
 import { Feature } from '@/types/APISchema';
-import { ChevronDown } from 'lucide-react';
-import toast from 'react-hot-toast';
+import ApiTestDialog from '@/components/common/dialog/ApiTestDialog';
 
 const methodColor = (method: string) => {
     switch (method) {
@@ -132,32 +134,51 @@ export default function DocsBody({ data, category }: { data: Feature; category: 
                     <CardDescription>Response schema by status code</CardDescription>
                 </CardHeader>
                 <CardContent className="space-y-4">
-                    {Object.entries(data.responses).map(([status, schema]) => (
-                        <Collapsible key={status}>
-                            <CollapsibleTrigger asChild>
-                                <Button
-                                    variant="ghost"
-                                    className="flex w-full items-center justify-between"
-                                >
-                                    <div className="flex items-center gap-2">
-                                        <Badge variant="secondary">{status}</Badge>
-                                        <span className="text-muted-foreground text-sm">
-                                            Response Body
-                                        </span>
-                                    </div>
-                                    <ChevronDown className="h-4 w-4" />
-                                </Button>
-                            </CollapsibleTrigger>
-                            <CollapsibleContent>
-                                <Separator className="my-3" />
-                                <pre className="bg-muted max-h-[400px] overflow-auto rounded-md p-4 text-xs sm:text-sm">
-                                    {JSON.stringify(schema, null, 2)}
-                                </pre>
-                            </CollapsibleContent>
-                        </Collapsible>
-                    ))}
+                    <CardContent className="space-y-4">
+                        {Object.entries(data.responses).map(([status, schema]) => (
+                            <ResponseCollapsible key={status} status={status} schema={schema} />
+                        ))}
+                    </CardContent>
                 </CardContent>
             </Card>
         </div>
+    );
+}
+
+function ResponseCollapsible({ status, schema }: { status: string; schema: unknown }) {
+    const [open, setOpen] = useState(false);
+
+    return (
+        <Collapsible open={open} onOpenChange={setOpen}>
+            <CollapsibleTrigger asChild>
+                <Button variant="ghost" className="flex w-full items-center justify-between">
+                    <div className="flex items-center gap-2">
+                        <Badge variant="secondary">{status}</Badge>
+                        <span className="text-muted-foreground text-sm">Response Body</span>
+                    </div>
+
+                    <motion.div animate={{ rotate: open ? 180 : 0 }} transition={{ duration: 0.2 }}>
+                        <ChevronDown className="h-4 w-4" />
+                    </motion.div>
+                </Button>
+            </CollapsibleTrigger>
+
+            <AnimatePresence initial={false}>
+                {open && (
+                    <motion.div
+                        initial={{ height: 0, opacity: 0 }}
+                        animate={{ height: 'auto', opacity: 1 }}
+                        exit={{ height: 0, opacity: 0 }}
+                        transition={{ duration: 0.25, ease: 'easeInOut' }}
+                        className="overflow-hidden"
+                    >
+                        <Separator className="my-3" />
+                        <pre className="bg-muted max-h-[400px] overflow-auto rounded-md p-4 text-xs sm:text-sm">
+                            {JSON.stringify(schema, null, 2)}
+                        </pre>
+                    </motion.div>
+                )}
+            </AnimatePresence>
+        </Collapsible>
     );
 }
