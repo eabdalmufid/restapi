@@ -13,3 +13,11 @@ export const URL_REGEX = /https?:\/\/[^\s"'<>]+/g;
  */
 export const TIKTOK_REGEX =
     /^(https?:\/\/)?(www\.)?(tiktok\.com\/(@[\w.-]+\/video\/\d+|v\/\d+|embed\/\d+)|(?:vm|vt)\.tiktok\.com\/[\w-]+\/?|tikwm\.com\/video\/\d+)(?:[?#].*)?$/i;
+
+/**
+ * Regex to match a Pinterest URL or video ID
+ * @example https://www.pinterest.com/pin/1234567890
+ * @example https://pin.it/1234567890
+ */
+export const PINTEREST_REGEX =
+    /^(https?:\/\/)?(([\w-]+\.)?pinterest\.com\/pin\/\d+\/?|pin\.it\/[\w-]+\/?)(?:[?#].*)?$/i;

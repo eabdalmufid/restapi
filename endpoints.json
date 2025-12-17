@@ -53,6 +53,96 @@
                     }
                 }
             ]
+        },
+        {
+            "key": "downloader",
+            "path": "/api/downloader",
+            "description": "Downloader endpoints.",
+            "features": [
+                {
+                    "key": "pinterest",
+                    "path": "/pinterest",
+                    "method": ["GET"],
+                    "summary": "Download image or video from pinterest",
+                    "queryParameters": [
+                        {
+                            "name": "url",
+                            "type": "string",
+                            "required": true
+                        }
+                    ],
+                    "responses": {
+                        "200": {
+                            "success": true,
+                            "message": null,
+                            "data": {
+                                "id": "865817097128006691",
+                                "title": null,
+                                "description": " ",
+                                "category": null,
+                                "privacy": "public",
+                                "section": null,
+                                "type": "pin",
+                                "media": {
+                                    "media_type": "image",
+                                    "items": {
+                                        "60x60": {
+                                            "width": 60,
+                                            "height": 60,
+                                            "url": "https://i.pinimg.com/60x60/fb/19/fa/fb19fa4ad9a36af6ccf9d4892f7c56e0.jpg"
+                                        }
+                                    }
+                                },
+                                "board_id": "865817165802587219",
+                                "board_owner": {
+                                    "username": "signalsignal658"
+                                },
+                                "pinner": {
+                                    "node_id": "VXNlcjoxMDYzNDgzMDM2OTE1NTU0ODU5",
+                                    "indexed": true,
+                                    "is_verified_merchant": false,
+                                    "blocked_by_me": false,
+                                    "explicitly_followed_by_me": false,
+                                    "is_default_image": false,
+                                    "domain_url": null,
+                                    "image_medium_url": "https://i.pinimg.com/75x75_RS/72/73/75/7273752991af1f5ce78808e44a8e8ba5.jpg",
+                                    "verified_identity": {},
+                                    "first_name": "DarkNihil",
+                                    "image_small_url": "https://i.pinimg.com/30x30_RS/72/73/75/7273752991af1f5ce78808e44a8e8ba5.jpg",
+                                    "ads_only_profile_site": null,
+                                    "username": "danamedina282",
+                                    "full_name": "DarkNihil",
+                                    "id": "1063483036915554859",
+                                    "type": "user",
+                                    "is_ads_only_profile": false,
+                                    "follower_count": 256,
+                                    "followed_by_me": false,
+                                    "domain_verified": false,
+                                    "instagram_data": null
+                                },
+                                "alt_text": null,
+                                "dominant_color": "#606867",
+                                "thumbnails": {
+                                    "60x60": {
+                                        "width": 60,
+                                        "height": 60,
+                                        "url": "https://i.pinimg.com/60x60/fb/19/fa/fb19fa4ad9a36af6ccf9d4892f7c56e0.jpg"
+                                    }
+                                },
+                                "comment_count": 0,
+                                "repin_count": 6,
+                                "share_count": 0,
+                                "created_at": "Sun, 14 Dec 2025 16:08:23 +0000"
+                            }
+                        },
+                        "400": {
+                            "success": false,
+                            "message": "URL parameter is required"
+                        },
+                        "500": { "success": false, "message": "Failed to fetch data" }
+                    }
+                }
+            ]
         }
     ]
 }
