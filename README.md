@@ -25,6 +25,41 @@ A modern REST API built with Next.js 16, TypeScript, and Tailwind CSS. This proj
 >
 > If you clone, fork, or contribute to this repository, ensure you are using the patched versions to remain secure.
 
+---
+
+## Educational Web Scraping & API Learning (LEGAL & ETHICAL)
+
+> ⚠️ **DISCLAIMER**
+>
+> All code examples in this repository are provided **FOR EDUCATIONAL PURPOSES ONLY**.
+>
+> ✅ Allowed:
+>
+> - Scraping **publicly accessible data**
+> - Consuming **official/public APIs**
+> - Learning how web technologies work
+>
+> ❌ NOT allowed:
+>
+> - Exploiting systems or vulnerabilities
+> - Bypassing authentication or authorization
+> - Scraping private or sensitive data
+> - Violating Terms of Service or applicable laws
+
+---
+
+## 🎯 Learning Objectives
+
+This repository is intended to help you:
+
+- Understand **HTTP requests & responses**
+- Learn **ethical web scraping**
+- Consume **REST APIs**
+- Analyze **HTML structures**
+- Practice **defensive API security** on your own projects
+
+---
+
 ## 📖 Description
 
 This project serves as a comprehensive foundation for building REST APIs using Next.js 16 and TypeScript. It features:
