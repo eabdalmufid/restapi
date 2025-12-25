@@ -28,7 +28,7 @@ export type HttpMethod = 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE' | 'OPTIONS'
 /* Query Parameters */
 export interface QueryParameter {
     name: string;
-    type: 'string' | 'number' | 'boolean';
+    type: 'string' | 'number' | 'boolean' | 'file';
     required?: boolean;
     default?: unknown;
 }

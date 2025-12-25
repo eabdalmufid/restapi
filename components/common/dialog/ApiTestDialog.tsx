@@ -15,6 +15,7 @@ import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
 import { Feature } from '@/types/APISchema';
 import { CodeBlock } from '@/components/ui/code-block';
+import { FileDropzone } from '@/components/ui/file-dropzone';
 
 export default function ApiTestDialog({
     feature,
@@ -24,14 +25,22 @@ export default function ApiTestDialog({
     category: string;
 }) {
     const [params, setParams] = useState<Record<string, string>>({});
+    const [files, setFiles] = useState<Record<string, File | null>>({});
     const [loading, setLoading] = useState(false);
     const [response, setResponse] = useState<Record<string, unknown> | null>(null);
     const [status, setStatus] = useState<number | null>(null);
 
-    const isEmpty = !Object.keys(params).length && !response && !status;
+    const hasFileParam = feature.queryParameters?.some(p => p.type === 'file') ?? false;
 
     const hasMissingRequired =
-        feature.queryParameters?.some(p => p.required && !params[p.name]?.trim()) ?? false;
+        feature.queryParameters?.some(p => {
+            if (!p.required) return false;
+            if (p.type === 'file') return !files[p.name];
+            return !params[p.name]?.trim();
+        }) ?? false;
+
+    const isEmpty =
+        !Object.keys(params).length && !Object.keys(files).length && !response && !status;
 
     const buildUrl = () => {
         const query = new URLSearchParams(params).toString();
@@ -40,14 +49,34 @@ export default function ApiTestDialog({
         }`;
     };
 
+    /* ================= ACTIONS ================= */
+
     const sendRequest = async () => {
         setLoading(true);
         setResponse(null);
         setStatus(null);
 
         const request = async () => {
-            const res = await fetch(buildUrl(), {
-                method: feature.method[0],
+            let body: BodyInit | undefined;
+            const url = buildUrl();
+
+            if (hasFileParam) {
+                const formData = new FormData();
+
+                Object.entries(params).forEach(([key, value]) => {
+                    if (value) formData.append(key, value);
+                });
+
+                Object.entries(files).forEach(([key, file]) => {
+                    if (file) formData.append(key, file);
+                });
+
+                body = formData;
+            }
+
+            const res = await fetch(url, {
+                method: body ? 'POST' : 'GET',
+                body,
             });
 
             setStatus(res.status);
@@ -56,7 +85,7 @@ export default function ApiTestDialog({
             setResponse(data);
 
             if (!res.ok) {
-                return Promise.reject(new Error(data.message));
+                throw new Error(data.message || 'Request failed');
             }
 
             return data;
@@ -75,6 +104,7 @@ export default function ApiTestDialog({
 
     const clearAll = () => {
         setParams({});
+        setFiles({});
         setResponse(null);
         setStatus(null);
         toast.dismiss();
@@ -101,11 +131,27 @@ export default function ApiTestDialog({
                             {feature.path}
                         </span>
                     </div>
-
                     {feature.queryParameters?.length ? (
-                        <div className="space-y-3">
-                            {feature.queryParameters.map(param => (
-                                <div key={param.name} className="flex items-center gap-3">
+                        feature.queryParameters.map(param => (
+                            <div key={param.name} className="space-y-1">
+                                <div className="flex items-center gap-2">
+                                    <span className="text-sm font-medium">{param.name}</span>
+                                    {param.required && (
+                                        <Badge variant="destructive">required</Badge>
+                                    )}
+                                </div>
+                                {param.type === 'file' ? (
+                                    <FileDropzone
+                                        file={files[param.name] ?? null}
+                                        required={param.required}
+                                        onChange={file =>
+                                            setFiles(prev => ({
+                                                ...prev,
+                                                [param.name]: file,
+                                            }))
+                                        }
+                                    />
+                                ) : (
                                     <Input
                                         placeholder={`${param.name} (${param.type})`}
                                         required={param.required}
@@ -116,12 +162,9 @@ export default function ApiTestDialog({
                                             }))
                                         }
                                     />
-                                    {param.required && (
-                                        <Badge variant="destructive">required</Badge>
-                                    )}
-                                </div>
-                            ))}
-                        </div>
+                                )}
+                            </div>
+                        ))
                     ) : (
                         <p className="text-muted-foreground text-sm">No query parameters</p>
                     )}
@@ -136,11 +179,7 @@ export default function ApiTestDialog({
                         </Button>
                     </div>
 
-                    {status && (
-                        <div className="flex items-center gap-2">
-                            <Badge variant="secondary">Status: {status}</Badge>
-                        </div>
-                    )}
+                    {status && <Badge variant="secondary">Status: {status}</Badge>}
 
                     {response && (
                         <CodeBlock className="max-h-[300px] overflow-auto rounded-md">

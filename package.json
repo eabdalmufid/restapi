@@ -22,6 +22,7 @@
         "cheerio": "^1.1.2",
         "class-variance-authority": "^0.7.1",
         "clsx": "^2.1.1",
+        "formidable": "^3.5.4",
         "framer-motion": "^12.23.25",
         "lucide-react": "^0.555.0",
         "next": "16.0.7",
@@ -33,6 +34,7 @@
     },
     "devDependencies": {
         "@tailwindcss/postcss": "^4",
+        "@types/formidable": "^3.4.6",
         "@types/node": "^20",
         "@types/react": "^19",
         "@types/react-dom": "^19",
